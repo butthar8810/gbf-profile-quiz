@@ -311,7 +311,8 @@ const QUIZ_COUNT = 10;
 const cardsForm = document.getElementById('cards-form');
 const answerInput = document.getElementById('answer-input');
 const submitBtn = document.getElementById('submit-btn');
-const resultText = document.getElementById('result');
+const resultText1 = document.getElementById('result1');
+const resultText2 = document.getElementById('result2');
 const scoreBoard = document.getElementById('score-board');
 const resultImage = document.getElementById('result-image');
 const scoreImage = document.getElementById('score-image');
@@ -323,53 +324,79 @@ let score = 0;
 
 
 function startgame() {
+    // 問題の10問をシャッフルしてquisSubsetに格納する。
     quisSubset = shuffleArray(allQuizData).slice(0, Math.min(QUIZ_COUNT, allQuizData.length));
+
+    // 初期化
     currentIndex = 0;
     currentReveals = 0;
     score = 0;
     scoreImage.style.display = 'none';
     screenshotBtn.style.display = 'none';
-
+    // クイズ開始
     loadNextQuestion();
 }
 
 function loadNextQuestion () {
-    resultText.textContent = '';
+    // 各種初期化
+    // ヒントのreveal(開き済)カウントを初期化
+    currentReveals = 0;
+    // cardsForm要素内のcard要素を削除（初期化）
+    cardsForm.innerHTML = '';
+    // 解答用Inputを初期化
+    answerInput.value = '';
+    answerInput.style.display = 'inline-block';
+    answerInput.disabled = false;
+    // 回答ボタンの初期化
+    submitBtn.disabled = true;
+    submitBtn.style.display = 'inline-block';
+    // 答えの文字列を初期化
+    resultText1.textContent = '';
+    resultText2.textContent = '';
+    // 答えの画像を初期化
     resultImage.style.display = 'none';
     resultImage.src = '';
-    answerInput.value = '';
-    currentReveals = 0;
-    cardsForm.innerHTML = '';
-    submitBtn.disabled = true;
-    answerInput.style.display = 'inline-block';
-    submitBtn.style.display = 'inline-block';
-    answerInput.disabled = false;
+    // 最終スコアの表示初期化(非表示化)
     scoreBoard.style.display = 'none';
     scoreImage.style.display = 'none';
     screenshotBtn.style.display = 'none';
 
+
+    // クイズが10問以上の場合、スコア発表に遷移
     if( currentIndex >= quisSubset.length ){
         showFinalScore();
         return;
     } 
+    // quisSubset内のhints配列を分割代入
     const { hints } = quisSubset[currentIndex];
+    // hintsをシャッフル
     const shuffledHints = shuffleArray(hints.slice());
 
+    // 各ヒントの作成
     shuffledHints.forEach((hint, idx) => {
         const card = document.createElement('div');
+        // card属性の付与
         card.classList.add('card');
+        // ヒントの見出し作成
         card.textContent = `ヒント${idx + 1}`;
+        // ヒントをクリックした時の処理を登録
         card.addEventListener('click', () => revealHint(card, hint));
+        // cardsForm要素内に作成したcard要素を格納
         cardsForm.appendChild(card);
     });
 }
 function revealHint(card, hint){
+    // revealed(開き済)のヒントをクリックした場合は何もせずにreturn
     if( card.classList.contains('revealed') ){
         return;
     }
+    // revealed(開き済)の属性を付与
     card.classList.add('revealed');
+    // 表示をhintの文字列に変更
     card.textContent = hint;
+    // reveal(開き済)カウントをインクリメント
     currentReveals++;
+    // reveal(開き済)カウントが1以上ならば回答ボタンを押せるようにする
     if (currentReveals > 0) {
         submitBtn.disabled = false;
     } 
@@ -379,18 +406,23 @@ function checkAnswer(){
     const userAnswer = answerInput.value.trim();
     // 現問題の答えの文字列を格納
     const correntAnswer = quisSubset[currentIndex].answer;
+    // 1つもヒントをめくらずに回答ボタンを押下
     if ( currentReveals === 0 ) {
         alert('まずはヒントを１つ以上めくってから回答してください');
         return;
     }
+    // 答えを選択せずに回答ボタンを押下
     if ( userAnswer === '' ) {
         alert('答えを入力してください');
         return;
     }
-    if ( userAnswer === correntAnswer ) {
+
+    
+    if ( userAnswer === correntAnswer ) {// 答えが一致した場合
         const points = Math.max(1, 11 - currentReveals);
         score += points;
-        resultText.textContent = `正解！\n${points}点獲得`;
+        resultText1.textContent = `正解！`;
+        resultText2.textContent = `${points}点獲得`;
         showAnswerImage();
         submitBtn.disabled = true;
         answerInput.disabled = true;
@@ -402,8 +434,9 @@ function checkAnswer(){
                 loadNextQuestion();
             }, 3000);
         }
-    } else {
-        resultText.textContent = `不正解！`;
+    } else {// 答えを間違えた場合
+        resultText1.textContent = `不正解！`;
+        resultText2.textContent = `正解は「${correntAnswer}」`;
         showAnswerImage();
         submitBtn.disabled = true;
         if ( currentIndex >= quisSubset.length - 1 ) {
@@ -421,6 +454,7 @@ function checkAnswer(){
     }
 }
 function showAnswerImage() {
+    // 答えの画像を表示
     resultImage.src = quisSubset[currentIndex].image;
     resultImage.style.display = 'block'
 }
@@ -432,7 +466,7 @@ function showFinalScore(){
     screenshotBtn.style.display = 'inline-block';
 }
 function takeScreenshot(){
-    html2canvas(document.querySelector("#screenshot-btn")).then(canvas =>{
+    html2canvas(document.querySelector("#quiz-form")).then(canvas =>{
         const link = document.createElement('a');
         link.download = 'gbf_quiz_result.png';
         link.href = canvas.toDataURL();

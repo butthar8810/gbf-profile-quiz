@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const ruleBtn = document.querySelector('.rule-btn');
     const ruleSlideMenu = document.querySelector('.rule-slide-menu');
 
-    ruleBtn.addEventListener("mouseover", function() {        
-        this.classList.add('active');
-        ruleSlideMenu.classList.add('active');
+    ruleBtn.addEventListener("click", function() {        
+        this.classList.toggle('active');
+        ruleSlideMenu.classList.toggle('active');
     });
     
     document.addEventListener('click', function(e) {
