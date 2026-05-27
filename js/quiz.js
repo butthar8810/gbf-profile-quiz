@@ -431,7 +431,7 @@ async function checkAnswer(){
                 showFinalScore();
             }, 2000);
         } else {
-            await sleep(1000);
+            await sleep(500);
             document.addEventListener('click', () => {
                 currentIndex++;
                 currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
@@ -451,7 +451,7 @@ async function checkAnswer(){
             }, 2000);
         } else {
             answerInput.disabled = true;
-            await sleep(1000);
+            await sleep(500);
             document.addEventListener('click', () => {
                 currentIndex++;
                 currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
