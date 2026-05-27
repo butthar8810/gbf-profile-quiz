@@ -316,12 +316,13 @@ const resultText2 = document.getElementById('result2');
 const scoreBoard = document.getElementById('score-board');
 const resultImage = document.getElementById('result-image');
 const scoreImage = document.getElementById('score-image');
-const screenshotBtn = document.getElementById('screenshot-btn');
+const shareLinks = document.getElementById('share-links');
+const currentQuizNumber = document.getElementById('current-quiz-number');
 let quisSubset = [];
 let currentIndex = 0;
 let currentReveals = 0;
 let score = 0;
-
+let shareScore = 0;
 
 function startgame() {
     // 問題の10問をシャッフルしてquisSubsetに格納する。
@@ -332,7 +333,7 @@ function startgame() {
     currentReveals = 0;
     score = 0;
     scoreImage.style.display = 'none';
-    screenshotBtn.style.display = 'none';
+    shareLinks.style.display = 'none';
     // クイズ開始
     loadNextQuestion();
 }
@@ -359,7 +360,7 @@ function loadNextQuestion () {
     // 最終スコアの表示初期化(非表示化)
     scoreBoard.style.display = 'none';
     scoreImage.style.display = 'none';
-    screenshotBtn.style.display = 'none';
+    shareLinks.style.display = 'none';
 
 
     // クイズが10問以上の場合、スコア発表に遷移
@@ -427,10 +428,13 @@ function checkAnswer(){
         submitBtn.disabled = true;
         answerInput.disabled = true;
         if ( currentIndex >= quisSubset.length - 1 ) {
-            setTimeout(() => {showFinalScore();}, 2000);
+            setTimeout(() => {
+                showFinalScore();
+            }, 2000);
         } else {
             setTimeout(() => {
                 currentIndex++;
+                currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
                 loadNextQuestion();
             }, 3000);
         }
@@ -442,11 +446,14 @@ function checkAnswer(){
         if ( currentIndex >= quisSubset.length - 1 ) {
             answerInput.style.display = 'none';
             submitBtn.style.display = 'none';
-            setTimeout(() => {showFinalScore();}, 2000);
+            setTimeout(() => {
+                showFinalScore();
+            }, 2000);
         } else {
             answerInput.disabled = true;
             setTimeout(() => {
                 currentIndex++;
+                currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
                 loadNextQuestion();
                 answerInput.disabled = false;
             }, 3000);
@@ -460,19 +467,13 @@ function showAnswerImage() {
 }
 function showFinalScore(){
     // resultText はそのまま保持
-    scoreBoard.style.display = 'block'
+    scoreBoard.style.display = 'block';
     scoreBoard.textContent = `団長の合計スコア：${score}`;
+    shareScore = score;
     scoreImage.style.display = 'block';
-    screenshotBtn.style.display = 'inline-block';
+    shareLinks.style.display = 'inline-block';
 }
-function takeScreenshot(){
-    html2canvas(document.querySelector("#quiz-form")).then(canvas =>{
-        const link = document.createElement('a');
-        link.download = 'gbf_quiz_result.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    });
-}
+
 
 const shuffleArray = (array) => {
     const cloneArray = [...array]
@@ -496,11 +497,35 @@ function createSelectOptions(){
     answerInput.innerHTML = html;
 }
 
+function takeScreenshot(){
+    html2canvas(document.querySelector("#quiz-form")).then(canvas =>{
+        const link = document.createElement('a');
+        link.download = 'gbf_quiz_result.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+function shareTwitter(){
+    const href = 'https://x.com/intent/tweet?text=';
+    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${shareScore}点獲得しました！\n`);
+    const appUrl = `&url=` + encodeURIComponent(decodeURIComponent(location.href));
+    const url = href + text + appUrl;
+    window.open(url, "_blank");
+
+}
+function shareMisskey(){
+    const href = 'https://misskeyshare.link/share.html?text=';
+    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${shareScore}点獲得しました！\n`);
+    const appUrl = `&url=` + encodeURIComponent(decodeURIComponent(location.href));
+    const url = href + text + appUrl;
+    window.open(url);
+}
+
 
 // select要素にallQuizDataのanswerを格納する
 createSelectOptions();
-// ボタン押下時の処理を登録
+// 回答ボタン押下時の処理を登録
 submitBtn.addEventListener('click', checkAnswer);
-screenshotBtn.addEventListener('click', takeScreenshot);
 // ゲームスタート
 startgame();

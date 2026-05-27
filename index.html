@@ -17,25 +17,30 @@
                 <div id="header-logo">
                     <a href="/"><img src="images/ip-granblue.png" alt=""></a>
                 </div>
-                <div id="header-link-list">
-                    <div class="rule-btn">ルール <i class="fa-solid fa-angle-down"></i></div>
-                    <div class="rule-slide-menu">
-                        <div class="rule-text">
-                            <p>10個あるヒント（プロフィール）からグラブルキャラを当てよう。</p>
-                            <p>手順：</p>
-                            <ol>
-                                <li>10個あるヒントの中から１つクリックしてオープンし、ヒント（プロフィール）を確認してください。</li>
-                                <li>確認したヒントからグラブルのキャラを当ててみてください。（注：回答権は1回のみ）</li>
-                                <li>ヒント１つでわからない場合は、また違うヒントをクリックしてオープンしてください。</li>
-                                <li>品とのオープンを繰り返して言って、より少ないヒントでキャラを当ててみてください。</li>
-                            </ol>
-                            <ul>
-                                <li>開けたヒントが少なければ少ないほど点数が多くなります。（最高１０点）</li>
-                                <li>ヒントの種類は属性, 得意武器, 種族/性別, 戦術タイプ, 解放武器, 奥義名, 1アビ, サポアビ, 年齢, [二つ名]の１０種です。</li>
-                                <li>SSRキャラで実装されたキャラ(季節限定を除く)が出題されます。</li>
-                                <li>SSRキャラが複数実装されているキャラは１キャラに絞られています（選定は雰囲気）</li>
-                            </ul>
+                <div class="header-title">
+                    <h1 id="title">グランブルーファンタジープロフィールクイズ</h1>
+                    <div id="header-link-list">
+                        
+                        <div class="rule-btn">ルール <i class="fa-solid fa-angle-down"></i></div>
+                        <div class="rule-slide-menu">
+                            <div class="rule-text">
+                                <p>10個あるヒント（プロフィール）からグラブルキャラを当てよう。</p>
+                                <p>手順：</p>
+                                <ol>
+                                    <li>10個あるヒントの中から１つクリックしてオープンし、ヒント（プロフィール）を確認してください。</li>
+                                    <li>確認したヒントからグラブルのキャラを当ててみてください。（注：回答権は1回のみ）</li>
+                                    <li>ヒント１つでわからない場合は、また違うヒントをクリックしてオープンしてください。</li>
+                                    <li>品とのオープンを繰り返して言って、より少ないヒントでキャラを当ててみてください。</li>
+                                </ol>
+                                <ul>
+                                    <li>開けたヒントが少なければ少ないほど点数が多くなります。（最高１０点）</li>
+                                    <li>ヒントの種類は属性, 得意武器, 種族/性別, 戦術タイプ, 解放武器, 奥義名, 1アビ, サポアビ, 年齢, [二つ名]の１０種です。</li>
+                                    <li>SSRキャラで実装されたキャラ(季節限定を除く)が出題されます。</li>
+                                    <li>SSRキャラが複数実装されているキャラは１キャラに絞られています（選定は雰囲気）</li>
+                                </ul>
+                            </div>
                         </div>
+                        <div id="current-quiz-number">問題は全10問です</div>
                     </div>
                 </div>
             </div>
@@ -43,7 +48,6 @@
     </header>
     <div id="dummy-header"></div>
 
-    <h1 id="title">グランブルーファンタジープロフィールクイズ</h1>
     <div id="quiz-form">
         <div id="cards-form">
             <div class="card">ヒント1</div>
@@ -59,10 +63,12 @@
         </div>
         <div id="score-form">
             <div id="score-board"></div>
+            <div id="share-links">
+                <a id="screenshot-btn" onclick="takeScreenshot()">スクショを撮る</a>
+                <a id="X-share-btn" onclick="shareTwitter()"><i class="fa-brands fa-x-twitter"></i> でシェア</a>
+                <a id="Mi-share-btn" onclick="shareMisskey()"><img src="https://misskeyshare.link/image/mi.webp" style="width: 1.2em;"> でシェア</a>
+            </div>
             <img id="score-image" src="images/Luria.png" alt="">
-
-            <button id="screenshot-btn">スクリーンショットを撮る</button>
-
         </div>
         <div id="input-form">
             <select name="chara-name" id="answer-input"></select>
