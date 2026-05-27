@@ -99,17 +99,17 @@ header{
 .rule-slide-menu{
     position: absolute;
     width: 100vw;
-    height: 300px;
+    height: 400px;
     top: -1000px;
     left: 0;
     background-color: #c4c4c4;
     z-index: -100;
+    overflow-y: scroll;
 
     display: flex;
-    flex-direction: column;
-    align-items: center;
     transition: top 0.3s ease-in-out;
 }
+
 .rule-slide-menu.active{
     top: 100px;
 }
@@ -121,21 +121,27 @@ header{
     flex-direction: column;
     margin: 0 80px;
 }
-
+.rule-text h1{
+    font-size: 28px;
+}
 .rule-text p{
-    font-size: 20px;
+    font-size: 16px;
     margin: 10px 0;
 }
-
-@media screen and (max-width: 1199px) {
-    .rule-slide-menu{
-        height: 450px;
-    }
+.rule-text ol{
+    padding: 0px 25px;
 }
+.rule-text ul{
+    padding: 10px 40px;
+}
+
 @media screen and (max-width: 787px) {
 
     .rule-slide-menu{
         height: 600px;
+    }
+    .rule-text{
+        margin: 0 30px;
     }
 }
 /**********************************************************************/

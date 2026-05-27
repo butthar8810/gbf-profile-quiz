@@ -322,7 +322,6 @@ let quisSubset = [];
 let currentIndex = 0;
 let currentReveals = 0;
 let score = 0;
-let shareScore = 0;
 
 function startgame() {
     // 問題の10問をシャッフルしてquisSubsetに格納する。
@@ -402,7 +401,7 @@ function revealHint(card, hint){
         submitBtn.disabled = false;
     } 
 }
-function checkAnswer(){
+async function checkAnswer(){
     // 空白を削除した文字列を格納
     const userAnswer = answerInput.value.trim();
     // 現問題の答えの文字列を格納
@@ -423,7 +422,7 @@ function checkAnswer(){
         const points = Math.max(1, 11 - currentReveals);
         score += points;
         resultText1.textContent = `正解！`;
-        resultText2.textContent = `${points}点獲得`;
+        resultText2.textContent = `${points}点獲得(クリックで次へ)`;
         showAnswerImage();
         submitBtn.disabled = true;
         answerInput.disabled = true;
@@ -432,15 +431,16 @@ function checkAnswer(){
                 showFinalScore();
             }, 2000);
         } else {
-            setTimeout(() => {
+            await sleep(1000);
+            document.addEventListener('click', () => {
                 currentIndex++;
                 currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
                 loadNextQuestion();
-            }, 3000);
+            }, {'once': true});
         }
     } else {// 答えを間違えた場合
         resultText1.textContent = `不正解！`;
-        resultText2.textContent = `正解は「${correntAnswer}」`;
+        resultText2.textContent = `正解は「${correntAnswer}」(クリックで次へ)`;
         showAnswerImage();
         submitBtn.disabled = true;
         if ( currentIndex >= quisSubset.length - 1 ) {
@@ -451,12 +451,13 @@ function checkAnswer(){
             }, 2000);
         } else {
             answerInput.disabled = true;
-            setTimeout(() => {
+            await sleep(1000);
+            document.addEventListener('click', () => {
                 currentIndex++;
                 currentQuizNumber.textContent = `現在${currentIndex + 1}問目`;
                 loadNextQuestion();
                 answerInput.disabled = false;
-            }, 3000);
+            }, {'once': true});
         }
     }
 }
@@ -469,9 +470,8 @@ function showFinalScore(){
     // resultText はそのまま保持
     scoreBoard.style.display = 'block';
     scoreBoard.textContent = `団長の合計スコア：${score}`;
-    shareScore = score;
     scoreImage.style.display = 'block';
-    shareLinks.style.display = 'inline-block';
+    shareLinks.style.display = 'flex';
 }
 
 
@@ -508,7 +508,7 @@ function takeScreenshot(){
 
 function shareTwitter(){
     const href = 'https://x.com/intent/tweet?text=';
-    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${shareScore}点獲得しました！\n`);
+    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${score}点獲得しました！\n#グラブルプロフィールクイズ\n`);
     const appUrl = `&url=` + encodeURIComponent(decodeURIComponent(location.href));
     const url = href + text + appUrl;
     window.open(url, "_blank");
@@ -516,12 +516,12 @@ function shareTwitter(){
 }
 function shareMisskey(){
     const href = 'https://misskeyshare.link/share.html?text=';
-    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${shareScore}点獲得しました！\n`);
+    const text = encodeURIComponent(`${decodeURIComponent(document.title)}をやったよ！\n団長は${score}点獲得しました！\n#グラブルプロフィールクイズ\n`);
     const appUrl = `&url=` + encodeURIComponent(decodeURIComponent(location.href));
     const url = href + text + appUrl;
     window.open(url);
 }
-
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));//timeはミリ秒
 
 // select要素にallQuizDataのanswerを格納する
 createSelectOptions();
