@@ -24,10 +24,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <title>グランブルーファンタジー プロフィールクイズ</title>
 </head>
-<body>
+<body onload="startgame()">
     <header>
         <div id="main-header">
             <div class="main-inner">
@@ -111,7 +110,7 @@
         </div>
         <div id="input-form">
             <select name="chara-name" id="answer-input"></select>
-            <button id="submit-btn">回答</button>
+            <button id="submit-btn" onclick="checkAnswer()">回答</button>
         </div>
         <div id="result-form">
             <div id="result1"></div>
@@ -119,10 +118,11 @@
             <img id="result-image" src alt="正解画像">
         </div>
     </div>
+    <img src="images/element/光.png">
+    
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="js/quiz.js"></script>
     <script src="js/slide.js"></script>
-
+    <script src="js/quiz.js"></script>
 </body>
 </html>
