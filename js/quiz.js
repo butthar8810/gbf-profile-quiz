@@ -405,7 +405,7 @@ function convertHintsToArray(hints) {
     const cloneArray = [];
   
     cloneArray.push(`<img src="images/element/${hints.element}.png">`);
-    cloneArray.push(`<img src="images/race/${hints.race}.png">/${hints.sex}`);
+    cloneArray.push(`<img src="images/race/${hints.race}.png">/ ${hints.sex}`);
     if (hints.weapon2 == '-') {
         cloneArray.push(`<img src="images/mainWeapon/${hints.weapon1}.png">`);
     } else {
