@@ -412,12 +412,12 @@ function loadNextQuestion () {
     const shuffledHints = shuffleArray(hintsArray.slice());
 
     // 各ヒントの作成
-    shuffledHints.forEach((hint, idx) => {
+    shuffledHints.forEach((hint) => {
         const card = document.createElement('div');
         // card属性の付与
         card.classList.add('card');
         // ヒントの見出し作成
-        card.textContent = `ヒント${idx + 1}`;
+        card.innerHTML = '<img src="images/question.jpg">';
         // ヒントをクリックした時の処理を登録
         card.addEventListener('click', () => revealHint(card, hint));
         // cardsForm要素内に作成したcard要素を格納
