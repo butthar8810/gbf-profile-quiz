@@ -348,8 +348,7 @@ function createSelectOptions(){
         create: false,
         maxItems: 1,
         maxOptions: allQuizData.length,
-        controlInput: null,   // 検索用の入力ボックス自体を非表示にする
-        searchField: null,
+        searchField: 'value',
         render: {
             // ドロップダウン内の選択肢の見た目
             option: function(data, escape) {
@@ -359,6 +358,26 @@ function createSelectOptions(){
             item: function(data, escape) {
                 return `<div class="choices"><img src="${escape(data.src)}">${escape(data.text)}</div>`;
             }
+        },
+        score: function(search) {
+            // 全角・半角、カタカナ・ひらがな、長音符の差異を吸収する関数を定義
+            function normalize(str) {
+                return str
+                    .replace(/[\u30a1-\u30f6]/g, function(match) {
+                        // カタカナをひらがなに変換
+                        return String.fromCharCode(match.charCodeAt(0) - 0x60);
+                    })
+                    .toLowerCase();
+            }
+
+            var searchNorm = normalize(search);
+
+            return function(data) {
+                var textNorm = normalize(data.text || '');
+                var score = 0;
+                if (textNorm.indexOf(searchNorm) !== -1) { score = 1; }
+                return score;
+            };
         }
     });
     allQuizData.forEach ((element) => {
@@ -371,6 +390,7 @@ function createSelectOptions(){
     pulldown.addOptions(options);
     pulldown.refreshOptions(false);
 }
+
 
 
 // 次の設問の準備を行う
