@@ -7,6 +7,12 @@
     width: 100%;
     height: 100px;
 }
+body{
+    background-image: url(../images/back.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
 /**********************************************************************/
 /* header form
 /**********************************************************************/
@@ -18,6 +24,7 @@ header{
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    box-shadow: 1px 1px 5px #333333;
 }
 #main-header{
     width: 100%;
@@ -105,6 +112,7 @@ header{
     background-color: #c4c4c4;
     z-index: -100;
     overflow-y: scroll;
+    box-shadow: 1px 1px 5px #333333;
 
     display: flex;
     transition: top 0.3s ease-in-out;
@@ -150,13 +158,13 @@ header{
 
 #quiz-form{
     width: 100%;
-    padding: 0 40px;
-    margin-top: 10px;
+    padding: 10px 40px;
     
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: rgba(255,255,255,0.7); 
 }
 
 
@@ -254,7 +262,6 @@ header{
     min-height: auto;
     height: 52px; /* 入力エリアの縦幅を固定または変更 */
     padding: 0 !important;
-    cursor: pointer;
 }
 .ts-wrapper {
     width: 400px;
