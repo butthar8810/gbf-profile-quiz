@@ -187,6 +187,7 @@ header{
     transition: all 0.5s ease;
 }
 .card img{
+    width: 100%;
 
 }
 .revealed{
@@ -215,6 +216,19 @@ header{
     }
     .card{
         font-size: 16px;
+    }
+}
+@media screen and (max-width: 520px) {
+    #cards-form{
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(5, 80px);
+        gap: 5px;
+        max-width: 600px;
+    }
+    .card{
+        font-size: 16px;
+        width: 140px;
+        height: 80px;
     }
 }
 /**********************************************************************/
