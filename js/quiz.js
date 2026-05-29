@@ -331,15 +331,18 @@ function startgame() {
     quisSubset = shuffleArray(allQuizData).slice(0, Math.min(QUIZ_COUNT, allQuizData.length));
 
     // 初期化
+    initialize();
+
+    // クイズ開始
+    loadNextQuestion();
+}
+function initialize(){
     currentIndex = 0;
     currentReveals = 0;
     score = 0;
     scoreImage.style.display = 'none';
     shareLinks.style.display = 'none';
-    // クイズ開始
-    loadNextQuestion();
 }
-
 // プルダウンリストの格納
 function createSelectOptions(){
     let options = [];
@@ -389,6 +392,10 @@ function createSelectOptions(){
     });
     pulldown.addOptions(options);
     pulldown.refreshOptions(false);
+
+    pulldown.on('dropdown_open', () => {
+        pulldown.clear();
+    });
 }
 
 
@@ -396,29 +403,8 @@ function createSelectOptions(){
 // 次の設問の準備を行う
 function loadNextQuestion () {
     // 各種初期化
-    // ヒントのreveal(開き済)カウントを初期化
-    currentReveals = 0;
-    // cardsForm要素内のcard要素を削除（初期化）
-    cardsForm.innerHTML = '';
-    // 解答用Inputを初期化
-    answerInput.value = '';
     pulldown.clear();
-    answerInput.style.display = 'inline-block';
-    answerInput.disabled = false;
-    // 回答ボタンの初期化
-    submitBtn.disabled = true;
-    submitBtn.style.display = 'inline-block';
-    // 答えの文字列を初期化
-    resultText1.textContent = '';
-    resultText2.textContent = '';
-    // 答えの画像を初期化
-    resultImage.style.display = 'none';
-    resultImage.src = '';
-    // 最終スコアの表示初期化(非表示化)
-    scoreBoard.style.display = 'none';
-    scoreImage.style.display = 'none';
-    shareLinks.style.display = 'none';
-
+	setupDom();
 
     // クイズが10問以上の場合、スコア発表に遷移
     if( currentIndex >= quisSubset.length ){
@@ -445,12 +431,34 @@ function loadNextQuestion () {
         cardsForm.appendChild(card);
     });
 }
-
+function setupDom(){
+    // ヒントのreveal(開き済)カウントを初期化
+    currentReveals = 0;
+    // cardsForm要素内のcard要素を削除（初期化）
+    cardsForm.innerHTML = '';
+    // 解答用Inputを初期化
+    answerInput.value = '';
+    answerInput.style.display = 'inline-block';
+    answerInput.disabled = false;
+    // 回答ボタンの初期化
+    submitBtn.disabled = true;
+    submitBtn.style.display = 'inline-block';
+    // 答えの文字列を初期化
+    resultText1.textContent = '';
+    resultText2.textContent = '';
+    // 答えの画像を初期化
+    resultImage.style.display = 'none';
+    resultImage.src = '';
+    // 最終スコアの表示初期化(非表示化)
+    scoreBoard.style.display = 'none';
+    scoreImage.style.display = 'none';
+    shareLinks.style.display = 'none';
+}
 function convertHintsToArray(hints) {
     const cloneArray = [];
   
     cloneArray.push(`<img src="images/element/${hints.element}.png">`);
-    cloneArray.push(`<img src="images/race/${hints.race}.png">/ ${hints.sex}`);
+    cloneArray.push(`<img src="images/race/${hints.race}.png">${hints.sex}`);
     if (hints.weapon2 == '-') {
         cloneArray.push(`<img src="images/mainWeapon/${hints.weapon1}.png">`);
     } else {

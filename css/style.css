@@ -310,7 +310,7 @@ header{
     width: 400px;
 }
 .ts-dropdown-content {
-    max-height: 40vh; /* お好みの縦幅に変更してください */
+    max-height: 400px !important; /* お好みの縦幅に変更してください */
 }
 
 .ts-dropdown-content > .option {
