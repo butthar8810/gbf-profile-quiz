@@ -570,18 +570,16 @@ function showFinalScore(){
 }
 
 // 配列のシャッフル
-const shuffleArray = (array) => {
-    const cloneArray = [...array]
-  
-    for (let i = cloneArray.length - 1; i >= 0; i--) {
-        let rand = Math.floor(Math.random() * (i + 1))
-        // 配列の要素の順番を入れ替える
-        let tmpStorage = cloneArray[i]
-        cloneArray[i] = cloneArray[rand]
-        cloneArray[rand] = tmpStorage
+function shuffleArray(array) {
+    const shuffled = [...array]; // 元の配列を破壊しないようにコピー
+    const mt = new MersenneTwister();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        // 0 から i までのランダムなインデックスを生成
+        const j = mt.nextInt(0, (i + 1));
+        // 要素を交換
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-  
-    return cloneArray
+    return shuffled;
 }
 
 // quiz-formのスクリーンショットを撮る
