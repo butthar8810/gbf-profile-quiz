@@ -402,6 +402,7 @@ function loadNextQuestion () {
     cardsForm.innerHTML = '';
     // 解答用Inputを初期化
     answerInput.value = '';
+    pulldown.clear();
     answerInput.style.display = 'inline-block';
     answerInput.disabled = false;
     // 回答ボタンの初期化
