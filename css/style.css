@@ -186,9 +186,8 @@ header{
 
     transition: all 0.5s ease;
 }
-.card img{
+.card .question-image{
     width: 100%;
-
 }
 .revealed{
     color: #333333;
@@ -229,6 +228,7 @@ header{
         font-size: 16px;
         width: 140px;
         height: 80px;
+
     }
 }
 /**********************************************************************/

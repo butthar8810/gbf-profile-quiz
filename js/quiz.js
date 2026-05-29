@@ -437,7 +437,7 @@ function loadNextQuestion () {
         // card属性の付与
         card.classList.add('card');
         // ヒントの見出し作成
-        card.innerHTML = '<img src="images/question.jpg">';
+        card.innerHTML = '<img class="question-image" src="images/question.jpg">';
         // ヒントをクリックした時の処理を登録
         card.addEventListener('click', () => revealHint(card, hint));
         // cardsForm要素内に作成したcard要素を格納
