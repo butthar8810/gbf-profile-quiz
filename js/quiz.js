@@ -317,16 +317,18 @@ const resultImage = document.getElementById('result-image');
 const scoreImage = document.getElementById('score-image');
 const shareLinks = document.getElementById('share-links');
 const currentQuizNumber = document.getElementById('current-quiz-number');
+const highScoreNumber = document.getElementById('high-score-number');
+const keyProfileQuizHighScore = 'GBF.ProfileQuiz.HighScore';
+
 let quisSubset = [];
 let currentIndex = 0;
 let currentReveals = 0;
 let score = 0;
 let pulldown;
 
+
 // ゲームスタート
 function startgame() {
-    // select要素にallQuizDataのanswerを格納する
-    createSelectOptions();
     // 問題の10問をシャッフルしてquisSubsetに格納する。
     quisSubset = shuffleArray(allQuizData).slice(0, Math.min(QUIZ_COUNT, allQuizData.length));
 
@@ -337,20 +339,30 @@ function startgame() {
     loadNextQuestion();
 }
 function initialize(){
+    // 変数初期化
     currentIndex = 0;
     currentReveals = 0;
     score = 0;
+    // DOMの初期化
+    initializeDom();
+}
+function initializeDom(){
     scoreImage.style.display = 'none';
     shareLinks.style.display = 'none';
+    // select要素にallQuizDataのanswerを格納する
+    createSelectOptions(allQuizData);
+    // ハイスコアの設定
+    const highScore = getHighScore();
+    highScoreNumber.textContent = `ハイスコア：${highScore}`;
 }
 // プルダウンリストの格納
-function createSelectOptions(){
+function createSelectOptions(characterList){
     let options = [];
 
     pulldown = new TomSelect('#answer-input', {
         create: false,
         maxItems: 1,
-        maxOptions: allQuizData.length,
+        maxOptions: characterList.length,
         searchField: 'value',
         render: {
             // ドロップダウン内の選択肢の見た目
@@ -383,7 +395,7 @@ function createSelectOptions(){
             };
         }
     });
-    allQuizData.forEach ((element) => {
+    characterList.forEach ((element) => {
         options.push({
             value: element.answer,
             text: element.answer,
@@ -402,13 +414,15 @@ function createSelectOptions(){
 
 // 次の設問の準備を行う
 function loadNextQuestion () {
+    
     // 各種初期化
+    currentReveals = 0;
     pulldown.clear();
 	setupDom();
 
     // クイズが10問以上の場合、スコア発表に遷移
     if( currentIndex >= quisSubset.length ){
-        showFinalScore();
+        showFinalScoreDom();
         return;
     } 
     // quisSubset内のhints配列を分割代入
@@ -432,8 +446,6 @@ function loadNextQuestion () {
     });
 }
 function setupDom(){
-    // ヒントのreveal(開き済)カウントを初期化
-    currentReveals = 0;
     // cardsForm要素内のcard要素を削除（初期化）
     cardsForm.innerHTML = '';
     // 解答用Inputを初期化
@@ -464,6 +476,7 @@ function convertHintsToArray(hints) {
     } else {
         cloneArray.push(`<img src="images/mainWeapon/${hints.weapon1}.png"><img src="images/mainWeapon/${hints.weapon2}.png">`);
     }
+//    cloneArray.push(`<img src="images/type/${hints.type}.png">`);
     cloneArray.push(hints.type);
     cloneArray.push(hints.unlock);
     cloneArray.push(hints.charge);
@@ -511,16 +524,19 @@ async function checkAnswer(){
 
     
     if ( userAnswer === correntAnswer ) {// 答えが一致した場合
+        // 点数の追加
         const points = Math.max(1, 11 - currentReveals);
         score += points;
+        // DOM操作
         resultText1.textContent = `正解！`;
         resultText2.textContent = `${points}点獲得(クリックで次へ)`;
-        showAnswerImage();
+        showAnswerImageDom();
         submitBtn.disabled = true;
         answerInput.disabled = true;
+        
         if ( currentIndex >= quisSubset.length - 1 ) {
             setTimeout(() => {
-                showFinalScore();
+                showFinalScoreDom();
             }, 2000);
         } else {
             await sleep(500);
@@ -531,15 +547,17 @@ async function checkAnswer(){
             }, {'once': true});
         }
     } else {// 答えを間違えた場合
+        // DOM操作
         resultText1.textContent = `不正解！`;
         resultText2.textContent = `正解は「${correntAnswer}」(クリックで次へ)`;
-        showAnswerImage();
+        showAnswerImageDom();
         submitBtn.disabled = true;
+
         if ( currentIndex >= quisSubset.length - 1 ) {
             answerInput.style.display = 'none';
             submitBtn.style.display = 'none';
             setTimeout(() => {
-                showFinalScore();
+                showFinalScoreDom();
             }, 2000);
         } else {
             answerInput.disabled = true;
@@ -555,20 +573,35 @@ async function checkAnswer(){
 }
 
 // 設問の正解と正解画像を表示する
-function showAnswerImage() {
+function showAnswerImageDom() {
     // 答えの画像を表示
     resultImage.src = quisSubset[currentIndex].image;
     resultImage.style.display = 'block'
 }
 // 最終結果を表示する
-function showFinalScore(){
+function showFinalScoreDom(){
+    setHighScore(score);
     // resultText はそのまま保持
     scoreBoard.style.display = 'block';
     scoreBoard.textContent = `団長の合計スコア：${score}`;
     scoreImage.style.display = 'block';
     shareLinks.style.display = 'flex';
 }
-
+function getHighScore(){
+    const highScore = getLocalStorage(keyProfileQuizHighScore);
+    if (highScore) {
+        return highScore;
+    }else{
+        return 0;
+    }
+}
+function setHighScore(currentScore){
+    const highScore = getHighScore();
+    if ( highScore < currentScore ){
+        highScoreNumber.textContent = `ハイスコア：${currentScore}`;
+        setLocalStorage(keyProfileQuizHighScore, currentScore);
+    }    
+}
 // 配列のシャッフル
 function shuffleArray(array) {
     const shuffled = [...array]; // 元の配列を破壊しないようにコピー
@@ -601,7 +634,6 @@ function shareTwitter(){
     window.open(url, "_blank");
 
 }
-
 // Misskeyにプレイ結果をShareする
 function shareMisskey(){
     const href = 'https://misskeyshare.link/share.html?text=';
@@ -612,3 +644,15 @@ function shareMisskey(){
 }
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));//timeはミリ秒
+
+// ローカルストレージ操作関数
+function getLocalStorage(key) {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+}
+function setLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+function removeLocalStorage(key) {
+    localStorage.removeItem(key);
+}
